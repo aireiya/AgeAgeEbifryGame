@@ -6,6 +6,7 @@
     <script type="text/javascript" src="src/resource.js" charset="UTF-8"></script>
     <script type="text/javascript" src="src/app.js" charset="UTF-8"></script>
     <script type="text/javascript" src="src/gameover.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="src/start.js" charset="UTF-8"></script>
 </head>
 <body>
     <canvas id="gameCanvas" ></canvas>
@@ -20,7 +21,7 @@
                   // 表示領域がリサイズされた場合、自動的にプログラムの画面をリサイズさせる
                   cc.view.resizeWithBrowserSize(true);
                   cc.LoaderScene.preload(g_resources, function () {
-                       cc.director.runScene(new gameScene());
+                       cc.director.runScene(new GameStartScene());
                   }, this);
               };
               cc.game.run("gameCanvas");

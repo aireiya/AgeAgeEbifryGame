@@ -42,9 +42,8 @@ var game = cc.Layer.extend({
   init: function() {
     this._super();
     size = cc.director.getWinSize();
-    //BGMと効果音のエンジンを追加
-
-    //宇宙船を操作するで追加した部分
+    //↑BGMと効果音のエンジンを追加↑;
+    //↓宇宙船を操作するで追加した部分↓
     cc.eventManager.addListener({
       event: cc.EventListener.MOUSE,
       onMouseDown: function(event) {
@@ -126,6 +125,7 @@ var game = cc.Layer.extend({
     this.audioEngine.setEffectsVolume(this.audioEngine.getEffectsVolume() - 0.1);
   }*/
 
+
 });
 
 //スクロール移動する背景クラス
@@ -138,7 +138,7 @@ var ScrollingBG = cc.Sprite.extend({
   //onEnterメソッドはスプライト描画の際に必ず呼ばれる
   onEnter: function() {
     //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
-    this.setPosition(size.width, size.height / 2);
+    this.setPosition(size.width , size.height / 2);
     //  this.setPosition(480,160);
   },
   scroll: function() {
@@ -146,7 +146,7 @@ var ScrollingBG = cc.Sprite.extend({
     this.setPosition(this.getPosition().x - scrollSpeed, this.getPosition().y);
     //画面の端に到達したら反対側の座標にする
     if (this.getPosition().x < 0) {
-      this.setPosition(this.getPosition().x + 480, this.getPosition().y);
+      this.setPosition(this.getPosition().x + 320, this.getPosition().y);
     }
   }
 });
@@ -242,7 +242,6 @@ var Asteroid = cc.Sprite.extend({
   }
 });
 
-
 //小惑星クラス上
 var Asteroid02 = cc.Sprite.extend({
   ctor: function() {
@@ -284,14 +283,15 @@ var Asteroid02 = cc.Sprite.extend({
 
 //宇宙船を元の位置に戻して、宇宙船の変数を初期化する
 function restartGame() {
+
   //残機減らし
-zanki--;
-scoreText.setString("残機:"+zanki);
-  //◆お手付きが0になったらゲームオーバー◆
-  if(zanki < 0){
-    zanki = 3;
-    cc.director.runScene(new GameOverScene());
-  }
+  zanki--;
+  scoreText.setString("残機:"+zanki);
+    //◆お手付きが0になったらゲームオーバー◆
+    if(zanki < 0){
+      zanki = 3;
+      cc.director.runScene(new GameOverScene());
+    }
 
   ship.ySpeed = 0;
   ship.setPosition(ship.getPosition().x, 160);
