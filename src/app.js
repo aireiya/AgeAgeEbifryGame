@@ -14,7 +14,8 @@ var gameGravity = -0.05;
 var gameThrust = 0.1;
 //パーティクル
 var emitter;
-var　 audioEngine;
+var audioEngine;
+var zanki=3;
 
 var gameScene = cc.Scene.extend({
 
@@ -59,6 +60,11 @@ var game = cc.Layer.extend({
 
     ship = new Ship();
     this.addChild(ship);
+
+    scoreText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
+    this.addChild(scoreText);
+    scoreText.setPosition(50,270);
+    //↑残機数初期値↑
 
     //scheduleUpdate関数は、描画の都度、update関数を呼び出す
     this.scheduleUpdate();
@@ -219,6 +225,15 @@ var Asteroid = cc.Sprite.extend({
 });
 //宇宙船を元の位置に戻して、宇宙船の変数を初期化する
 function restartGame() {
+  //残機減らし
+zanki--;
+scoreText.setString("残機:"+zanki);
+  //◆お手付きが0になったらゲームオーバー◆
+  if(zanki < 0){
+    zanki = 3;
+    cc.director.runScene(new GameOverScene());
+  }
+
   ship.ySpeed = 0;
   ship.setPosition(ship.getPosition().x, 160);
   ship.invulnerability = 100;
