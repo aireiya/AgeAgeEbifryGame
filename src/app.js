@@ -69,7 +69,8 @@ var game = cc.Layer.extend({
     //scheduleUpdate関数は、描画の都度、update関数を呼び出す
     this.scheduleUpdate();
     //小惑星の生成で追加
-    this.schedule(this.addAsteroid, 0.5);
+    this.schedule(this.addAsteroid, 5.0);
+    this.schedule(this.addAsteroid02, 7.0);
     //ここからパーティクルの設定
     emitter = cc.ParticleSun.create();
     this.addChild(emitter, 1);
@@ -87,6 +88,10 @@ var game = cc.Layer.extend({
   //小惑星の生成で追加
   addAsteroid: function(event) {
     var asteroid = new Asteroid();
+    this.addChild(asteroid);
+  },
+  addAsteroid02: function(event) {
+    var asteroid = new Asteroid02();
     this.addChild(asteroid);
   },
   removeAsteroid: function(asteroid) {
@@ -194,8 +199,9 @@ var Asteroid = cc.Sprite.extend({
   },
   onEnter: function() {
     this._super();
-    this.setPosition(600, Math.random() * 320);
-    var moveAction = cc.MoveTo.create(2.5, new cc.Point(-100, Math.random() * 320));
+    this.setPosition(600, Math.random(5) * /*320*/ -100);
+    var moveAction = cc.MoveTo.create(6, new cc.Point(-100, /*Math.random(5) * /*320*/ -150));
+    //↑これを変えてサンゴの出方を調整
     this.runAction(moveAction);
     this.scheduleUpdate();
   },
@@ -223,6 +229,47 @@ var Asteroid = cc.Sprite.extend({
     }
   }
 });
+
+
+//小惑星クラス上
+var Asteroid02 = cc.Sprite.extend({
+  ctor: function() {
+    this._super();
+    this.initWithFile(res.asteroid02_png);
+  },
+  onEnter: function() {
+    this._super();
+    this.setPosition(600, (Math.random(5) + 1) * /*320*/ 300);
+    var moveAction = cc.MoveTo.create(5, new cc.Point(-100, /*Math.random(5) * /*320*/ 400));
+    //↑これを変えてサンゴの出方を調整
+    this.runAction(moveAction);
+    this.scheduleUpdate();
+  },
+  update: function(dt) {
+    //小惑星との衝突を判定する処理
+    var shipBoundingBox = ship.getBoundingBox();
+    var asteroidBoundingBox = this.getBoundingBox();
+    //rectIntersectsRectは２つの矩形が交わっているかチェックする
+    if (cc.rectIntersectsRect(shipBoundingBox, asteroidBoundingBox) && ship.invulnerability == 0) {
+      gameLayer.removeAsteroid(this); //小惑星を削除する
+      //ボリュームを上げる
+      audioEngine.setEffectsVolume(audioEngine.getEffectsVolume() + 0.3);
+      //効果音を再生する
+      audioEngine.playEffect("res/se_bang.mp3");
+      audioEngine.playEffect(res.se_bang);
+      //bgmの再生をとめる
+      if (audioEngine.isMusicPlaying()) {
+        audioEngine.stopMusic();
+      }
+      restartGame();
+    }
+    //画面の外にでた小惑星を消去する処理
+    if (this.getPosition().x < -50) {
+      gameLayer.removeAsteroid(this)
+    }
+  }
+});
+
 //宇宙船を元の位置に戻して、宇宙船の変数を初期化する
 function restartGame() {
   //残機減らし
