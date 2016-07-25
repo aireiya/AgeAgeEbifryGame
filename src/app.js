@@ -16,6 +16,7 @@ var gameThrust = 0.1;
 var emitter;
 var audioEngine;
 var zanki=3;
+var ebi = 0;
 
 var gameScene = cc.Scene.extend({
 
@@ -161,16 +162,27 @@ var Ship = cc.Sprite.extend({
     this.invulnerability = 0; //無敵モード時間　初期値0
   },
   onEnter: function() {
-    this.setPosition(60, 160);
+    this.setPosition(100, 160);
   },
   updateY: function() {
     //宇宙船を操作するで追加した部分
+    //長押しで上がる処理
     if (this.engineOn) {
       this.ySpeed += gameThrust;
+      this.initWithFile(res.ship02_png);
+      ebi += 1;
+        if (ebi == 3){
+          this.initWithFile(res.ship03_png);
+          }
+        if (ebi == 6){
+          this.initWithFile(res.ship_png);
+          ebi = 0;
+          }
       //ここでパーティクルエフェクトを宇宙船のすぐ後ろに配置している
       emitter.setPosition(this.getPosition().x - 25, this.getPosition().y);
     } else {
       //エンジンOffのときは画面外に配置
+      this.initWithFile(res.ship_png);
       emitter.setPosition(this.getPosition().x - 250, this.getPosition().y);
     }
 
@@ -180,7 +192,7 @@ var Ship = cc.Sprite.extend({
       this.setOpacity(255 - this.getOpacity());
     }
 
-
+    //重力で落ちる処理
     this.setPosition(this.getPosition().x, this.getPosition().y + this.ySpeed);
     this.ySpeed += gameGravity;
 
