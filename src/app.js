@@ -20,6 +20,7 @@ var gameThrust = 0.1;
 var emitter;
 var audioEngine;
 var zanki=3;
+var score=0;
 var ebi = 0;
 
 var gameScene = cc.Scene.extend({
@@ -77,9 +78,13 @@ var game = cc.Layer.extend({
     ship = new Ship();
     this.addChild(ship);
 
-    scoreText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
+    zankiText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
+    this.addChild(zankiText);
+    zankiText.setPosition(50,300);
+    //↑残機数初期値↑
+    scoreText = cc.LabelTTF.create("スコア:" +score ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
     this.addChild(scoreText);
-    scoreText.setPosition(50,300);
+    scoreText.setPosition(200,300);
     //↑残機数初期値↑
 
     //scheduleUpdate関数は、描画の都度、update関数を呼び出す
@@ -87,6 +92,7 @@ var game = cc.Layer.extend({
     //小惑星の生成で追加
     this.schedule(this.addAsteroid, 5.0);
     this.schedule(this.addAsteroid02, 7.0);
+    this.schedule(this.additem, 1.0);
     //ここからパーティクルの設定
     emitter = cc.ParticleSun.create();
     this.addChild(emitter, 1);
@@ -112,6 +118,10 @@ var game = cc.Layer.extend({
   },
   addAsteroid02: function(event) {
     var asteroid = new Asteroid02();
+    this.addChild(asteroid);
+  },
+  additem: function(event) {
+    var asteroid = new item();
     this.addChild(asteroid);
   },
   removeAsteroid: function(asteroid) {
@@ -180,7 +190,7 @@ var ScrollingBG02up = cc.Sprite.extend({
   //onEnterメソッドはスプライト描画の際に必ず呼ばれる
   onEnter: function() {
     //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
-    this.setPosition(size.width , size.height);
+    this.setPosition(size.width , size.height * 0.9);
     //  this.setPosition(480,160);
   },
   scroll: function() {
@@ -375,7 +385,7 @@ var Asteroid02 = cc.Sprite.extend({
       //ボリュームを上げる
       audioEngine.setEffectsVolume(audioEngine.getEffectsVolume() + 0.3);
       //効果音を再生する
-      audioEngine.playEffect("res/se_bang.mp3");
+      //audioEngine.playEffect("res/se_bang.mp3");
       audioEngine.playEffect(res.se_bang);
       //bgmの再生をとめる
       if (audioEngine.isMusicPlaying()) {
@@ -390,12 +400,64 @@ var Asteroid02 = cc.Sprite.extend({
   }
 });
 
+//---------------↓アイテムクラス↓-------------
+var item = cc.Sprite.extend({
+  /*sprite: null,
+  // アイテムを保持しておく配列
+  itemSpriteArray: null,
+  // 配列の宣言　アイテムの名前を指定
+  itemArray: [res.item01_png, res.item02_png, res.item03_png, res.item04_png, res.item05_png, res.item06_png, res.item07_png],*/
+  ctor: function() {
+    this._super();
+    //this.itemSpriteArray = new Array();
+    //配列で画像管理　おーぶ出現のコード参照
+    //***itemの数字をランダムにすれば配列組む必要なくね？***
+    this.initWithFile("res/nagoya" + Math.random(6) + "_png");
+  },
+  onEnter: function() {
+    this._super();
+    this.setPosition(600, (Math.random(5) + 1) * /*320*/ 300);
+    var moveAction = cc.MoveTo.create(5, new cc.Point(-100, /*Math.random(5) * /*320*/ 400));
+    //↑これを変えてサンゴの出方を調整
+    this.runAction(moveAction);
+    this.scheduleUpdate();
+  },
+  update: function(dt) {
+    //小惑星との衝突を判定する処理
+    var shipBoundingBox = ship.getBoundingBox();
+    var asteroidBoundingBox = this.getBoundingBox();
+    //rectIntersectsRectは２つの矩形が交わっているかチェックする
+    if (cc.rectIntersectsRect(shipBoundingBox, asteroidBoundingBox) && ship.invulnerability == 0) {
+      gameLayer.removeAsteroid(this); //小惑星を削除する
+      //ボリュームを上げる
+      audioEngine.setEffectsVolume(audioEngine.getEffectsVolume() + 0.3);
+      //効果音を再生する
+      //audioEngine.playEffect("res/se_bang.mp3");
+      audioEngine.playEffect(res.se_bang);
+      //bgmの再生をとめる
+      /*if (audioEngine.isMusicPlaying()) {
+        audioEngine.stopMusic();
+      }
+      restartGame();*/
+
+      //スコアを追加する
+      score += 10;
+      scoreText.setString("スコア:"+score);
+    }
+    //画面の外にでた小惑星を消去する処理
+    if (this.getPosition().x < -50) {
+      gameLayer.removeAsteroid(this)
+    }
+  }
+});
+//---------------↑アイテムクラス終わり↑-------------
+
 //宇宙船を元の位置に戻して、宇宙船の変数を初期化する
 function restartGame() {
 
   //残機減らし
   zanki--;
-  scoreText.setString("残機:"+zanki);
+  zankiText.setString("残機:"+zanki);
     //◆お手付きが0になったらゲームオーバー◆
     if(zanki < 0){
       zanki = 3;
