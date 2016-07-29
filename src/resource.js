@@ -12,7 +12,11 @@ var res = {
     gameST_png : "res/start.png",
     ship02_png : "res/shrimp02.png",
     ship03_png : "res/shrimp03.png",
-    ship04_png : "res/shrimp04.png"
+    ship04_png : "res/shrimp04.png",
+    secondBG01_png : "res/rock_above02.png",
+    secondBG02_png : "res/rock_under02.png",
+    thirdBG01_png : "res/ceiling02.png",
+    thirdBG02_png : "res/land02.png"
 };
 
 var g_resources = [];

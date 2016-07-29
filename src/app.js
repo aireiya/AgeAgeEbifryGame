@@ -6,7 +6,11 @@ var mylabel;
 //背景スクロールで追加した部分
 var gameLayer;
 var background;
-var scrollSpeed = 1;
+var background02up;
+var background02down;
+var background03up;
+var background03down;
+var scrollSpeed = 0.5;
 //宇宙船で追加した部分　重力
 var ship;
 var gameGravity = -0.05;
@@ -58,12 +62,24 @@ var game = cc.Layer.extend({
     background = new ScrollingBG();
     this.addChild(background);
 
+    background02up = new ScrollingBG02up();
+    this.addChild(background02up);
+
+    background02down = new ScrollingBG02down();
+    this.addChild(background02down);
+
+    background03up = new ScrollingBG03up();
+    this.addChild(background03up);
+
+    background03down = new ScrollingBG03down();
+    this.addChild(background03down);
+    //自機初期値
     ship = new Ship();
     this.addChild(ship);
 
     scoreText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
     this.addChild(scoreText);
-    scoreText.setPosition(50,270);
+    scoreText.setPosition(50,300);
     //↑残機数初期値↑
 
     //scheduleUpdate関数は、描画の都度、update関数を呼び出す
@@ -83,6 +99,10 @@ var game = cc.Layer.extend({
   update: function(dt) {
     //backgroundのscrollメソッドを呼び出す
     background.scroll();
+    background02up.scroll();
+    background02down.scroll();
+    background03up.scroll();
+    background03down.scroll();
     ship.updateY();
   },
   //小惑星の生成で追加
@@ -127,7 +147,7 @@ var game = cc.Layer.extend({
 
 
 });
-
+//----------------------背景ここから-----------------
 //スクロール移動する背景クラス
 var ScrollingBG = cc.Sprite.extend({
   //ctorはコンストラクタ　クラスがインスタンスされたときに必ず実行される
@@ -150,7 +170,96 @@ var ScrollingBG = cc.Sprite.extend({
     }
   }
 });
-
+//------------------↑一番後ろ↑----------------------
+var ScrollingBG02up = cc.Sprite.extend({
+  //ctorはコンストラクタ　クラスがインスタンスされたときに必ず実行される
+  ctor: function() {
+    this._super();
+    this.initWithFile(res.secondBG01_png);
+  },
+  //onEnterメソッドはスプライト描画の際に必ず呼ばれる
+  onEnter: function() {
+    //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
+    this.setPosition(size.width , size.height);
+    //  this.setPosition(480,160);
+  },
+  scroll: function() {
+    //座標を更新する
+    this.setPosition(this.getPosition().x - scrollSpeed * 2, this.getPosition().y);
+    //画面の端に到達したら反対側の座標にする
+    if (this.getPosition().x < 0) {
+      this.setPosition(this.getPosition().x + 320, this.getPosition().y);
+    }
+  }
+});
+//---------------↑2番目上↑-------------------
+var ScrollingBG02down = cc.Sprite.extend({
+  //ctorはコンストラクタ　クラスがインスタンスされたときに必ず実行される
+  ctor: function() {
+    this._super();
+    this.initWithFile(res.secondBG02_png);
+  },
+  //onEnterメソッドはスプライト描画の際に必ず呼ばれる
+  onEnter: function() {
+    //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
+    this.setPosition(size.width , /*size.height*/ 0 );
+    //  this.setPosition(480,160);
+  },
+  scroll: function() {
+    //座標を更新する
+    this.setPosition(this.getPosition().x - scrollSpeed * 2, this.getPosition().y);
+    //画面の端に到達したら反対側の座標にする
+    if (this.getPosition().x < 0) {
+      this.setPosition(this.getPosition().x + 320, this.getPosition().y);
+    }
+  }
+});
+//------------------↑2番目下↑----------------------
+var ScrollingBG03up = cc.Sprite.extend({
+  //ctorはコンストラクタ　クラスがインスタンスされたときに必ず実行される
+  ctor: function() {
+    this._super();
+    this.initWithFile(res.thirdBG01_png);
+  },
+  //onEnterメソッドはスプライト描画の際に必ず呼ばれる
+  onEnter: function() {
+    //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
+    this.setPosition(size.width , size.height );
+    //  this.setPosition(480,160);
+  },
+  scroll: function() {
+    //座標を更新する
+    this.setPosition(this.getPosition().x - scrollSpeed * 3, this.getPosition().y);
+    //画面の端に到達したら反対側の座標にする
+    if (this.getPosition().x < 0) {
+      this.setPosition(this.getPosition().x + 320, this.getPosition().y);
+    }
+  }
+});
+//---------------↑3番目上↑-------------------
+var ScrollingBG03down = cc.Sprite.extend({
+  //ctorはコンストラクタ　クラスがインスタンスされたときに必ず実行される
+  ctor: function() {
+    this._super();
+    this.initWithFile(res.thirdBG02_png);
+  },
+  //onEnterメソッドはスプライト描画の際に必ず呼ばれる
+  onEnter: function() {
+    //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
+    this.setPosition(size.width , /*size.height*/ 0);
+    //  this.setPosition(480,160);
+  },
+  scroll: function() {
+    //座標を更新する
+    this.setPosition(this.getPosition().x - scrollSpeed * 3, this.getPosition().y);
+    //画面の端に到達したら反対側の座標にする
+    if (this.getPosition().x < 0) {
+      this.setPosition(this.getPosition().x + 320, this.getPosition().y);
+    }
+  }
+});
+//--------------↑3番目下↑-------------------
+//---------------背景ここまで------------------
 //重力（仮）で落下する　宇宙船　
 var Ship = cc.Sprite.extend({
   ctor: function() {
