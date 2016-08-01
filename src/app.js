@@ -11,10 +11,10 @@ var background02down;
 var background03up;
 var background03down;
 var scrollSpeed = 0.5;
-//宇宙船で追加した部分　重力
 var ship;
+//宇宙船で追加した部分　重力↓
 var gameGravity = -0.05;
-//宇宙船を操作するで追加した部分 エンジンの推進力
+//宇宙船を操作するで追加した部分 エンジンの推進力↓
 var gameThrust = 0.1;
 //パーティクル
 var emitter;
@@ -22,6 +22,7 @@ var audioEngine;
 var zanki=3;
 var score=0;
 var ebi = 0;
+var uppoint;
 
 var gameScene = cc.Scene.extend({
 
@@ -402,22 +403,23 @@ var Asteroid02 = cc.Sprite.extend({
 
 //---------------↓アイテムクラス↓-------------
 var item = cc.Sprite.extend({
-  /*sprite: null,
+  sprite: null,
   // アイテムを保持しておく配列
   itemSpriteArray: null,
   // 配列の宣言　アイテムの名前を指定
-  itemArray: [res.item01_png, res.item02_png, res.item03_png, res.item04_png, res.item05_png, res.item06_png, res.item07_png],*/
+  itemArray: [res.item01_png, res.item02_png, res.item03_png, res.item04_png, res.item05_png, res.item06_png, res.item07_png],
   ctor: function() {
     this._super();
-    //this.itemSpriteArray = new Array();
+    this.itemSpriteArray = new Array();
+    var rnd = Math.floor(Math.random() * 7);
     //配列で画像管理　おーぶ出現のコード参照
     //***itemの数字をランダムにすれば配列組む必要なくね？***
-    this.initWithFile("res/nagoya" + Math.random(6) + "_png");
+    this.initWithFile(/*"res/nagoya" + Math.random(6) + "_png"*/ this.itemArray[rnd]);
   },
   onEnter: function() {
     this._super();
-    this.setPosition(600, (Math.random(5) + 1) * /*320*/ 300);
-    var moveAction = cc.MoveTo.create(5, new cc.Point(-100, /*Math.random(5) * /*320*/ 400));
+    this.setPosition(600, Math.random()  * 320);
+    var moveAction = cc.MoveTo.create(5, new cc.Point(-100, Math.random() * 320));
     //↑これを変えてサンゴの出方を調整
     this.runAction(moveAction);
     this.scheduleUpdate();
@@ -443,7 +445,37 @@ var item = cc.Sprite.extend({
       //スコアを追加する
       score += 10;
       scoreText.setString("スコア:"+score);
+
+      //↓↓↓スコアを追加する(取ったものでポイント変更とかえびふりゃーちゃんの移動変更とかやるとしてる名残)
+      //if(gameLayer.removeAsteroid(this) == res.item01_png ){
+        /*if(uppoint == 1){
+          score += 10 * 2;
+          uppoint = 0;
+        }*/
+        //score += 10;
+          /*if(rnd < 3){
+            score += 10;
+          }
+          if(rnd < 2){
+            score += 10;
+          }*/
+        //scoreText.setString("スコア:"+score);
+      }
+      /*
+      //しゃちほこに、えびふりゃーのクリックパワーアップを追加
+      if(rnd == 4　&& gameThrust < 0.5){
+        gameThrust += 0.5;
+      }
+      //タワーに、えびふりゃーのクリックパワーダウンを追加
+      if(rnd == 5　&& gameThrust > -0.5){
+        gameThrust -= 0.5;
+      }
+      //城に、ポイントアップを付与
+      if(rnd == 6 ){
+        uppoint = 1;
+      }
     }
+    //↑↑↑スコアを追加する(取ったものでポイント変更とかえびふりゃーちゃんの移動変更とかやるとしてる名残)*/
     //画面の外にでた小惑星を消去する処理
     if (this.getPosition().x < -50) {
       gameLayer.removeAsteroid(this)
