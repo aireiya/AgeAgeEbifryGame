@@ -95,12 +95,17 @@ var game = cc.Layer.extend({
     this.schedule(this.addAsteroid02, 7.0);
     this.schedule(this.additem, 1.0);
     //ここからパーティクルの設定
-    emitter = cc.ParticleSun.create();
+    //emitter = cc.ParticleSun.create();
+    //emitter = new cc.ParticleSystem res.texturePlist
+    emitter = cc.ParticleMeteor .create();
     this.addChild(emitter, 1);
     var myTexture = cc.textureCache.addImage(res.particle_png);
     emitter.setTexture(myTexture);
     emitter.setStartSize(2);
     emitter.setEndSize(4);
+
+    //@addChild emitter
+
 
   },
   update: function(dt) {
@@ -420,7 +425,7 @@ var item = cc.Sprite.extend({
     this._super();
     this.setPosition(600, Math.random()  * 320);
     var moveAction = cc.MoveTo.create(5, new cc.Point(-100, Math.random() * 320));
-    //↑これを変えてサンゴの出方を調整
+    //↑これを変えてアイテムの出方を調整
     this.runAction(moveAction);
     this.scheduleUpdate();
   },

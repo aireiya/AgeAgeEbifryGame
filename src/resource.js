@@ -2,6 +2,7 @@ var res = {
     background_png : "res/background03.png",  //背景
     ship_png : "res/shrimp01.png",            //自機
     particle_png : "res/particle.png",        //パーティクル
+    texturePlist : "res/particle_texture.plist", //テクスチャプリセット
     asteroid_png : "res/coral_under.png",     //サンゴ
     asteroid02_png : "res/coral_above.png",   //サンゴ
     bgm_main : "res/bgm_main.mp3",            //BGM
