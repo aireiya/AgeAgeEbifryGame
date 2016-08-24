@@ -15,7 +15,14 @@ var gameover = cc.Layer.extend({
         var drop02 = cc.Sprite.create(res.replay_png);　
         drop02.setPosition(size.width / 2, size.height * 0.2);　
         this.addChild(drop02);
+        //------------BGM---------
+        audioEngine.stopMusic();
+        audioEngine = cc.audioEngine;
 
+        if (!audioEngine.isMusicPlaying()) {
+          audioEngine.playMusic(res.bgm_GO, true);
+        }
+        //-----------BGM----------
         // タップイベントリスナーを登録する
                 cc.eventManager.addListener({
                     event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -33,6 +40,7 @@ var gameover = cc.Layer.extend({
       onTouchMoved: function(touch, event) {},
       onTouchEnded: function(touch, event) {
         // 次のシーンに切り替える
+        audioEngine.stopMusic();
         cc.director.runScene(new gameScene());
       },
 });

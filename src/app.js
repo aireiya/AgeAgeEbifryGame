@@ -70,23 +70,11 @@ var game = cc.Layer.extend({
     background02down = new ScrollingBG02down();
     this.addChild(background02down);
 
-    background03up = new ScrollingBG03up();
-    this.addChild(background03up);
 
-    background03down = new ScrollingBG03down();
-    this.addChild(background03down);
     //自機初期値
     ship = new Ship();
     this.addChild(ship);
 
-    zankiText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
-    this.addChild(zankiText);
-    zankiText.setPosition(50,300);
-    //↑残機数初期値↑
-    scoreText = cc.LabelTTF.create("スコア:" +score ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
-    this.addChild(scoreText);
-    scoreText.setPosition(200,300);
-    //↑残機数初期値↑
 
     //scheduleUpdate関数は、描画の都度、update関数を呼び出す
     this.scheduleUpdate();
@@ -94,6 +82,8 @@ var game = cc.Layer.extend({
     this.schedule(this.addAsteroid, 5.0);
     this.schedule(this.addAsteroid02, 7.0);
     this.schedule(this.additem, 1.0);
+    //this.schedule(this.additem2, 1.0);
+
     //ここからパーティクルの設定
     //emitter = cc.ParticleSun.create();
     //emitter = new cc.ParticleSystem res.texturePlist
@@ -103,6 +93,21 @@ var game = cc.Layer.extend({
     emitter.setTexture(myTexture);
     emitter.setStartSize(2);
     emitter.setEndSize(4);
+
+    background03up = new ScrollingBG03up();
+    this.addChild(background03up);
+
+    background03down = new ScrollingBG03down();
+    this.addChild(background03down);
+
+    zankiText = cc.LabelTTF.create("残機:" +zanki ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
+    this.addChild(zankiText);
+    zankiText.setPosition(50,300);
+    //↑残機数初期値↑
+    scoreText = cc.LabelTTF.create("スコア:" +score ,"Arial","30",cc.TEXT_ALIGNMENT_CENTER);
+    this.addChild(scoreText);
+    scoreText.setPosition(200,300);
+    //↑残機数初期値↑
 
     //@addChild emitter
 
@@ -240,7 +245,7 @@ var ScrollingBG03up = cc.Sprite.extend({
   //onEnterメソッドはスプライト描画の際に必ず呼ばれる
   onEnter: function() {
     //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
-    this.setPosition(size.width , size.height );
+    this.setPosition(size.width , size.height + 10 );
     //  this.setPosition(480,160);
   },
   scroll: function() {
@@ -262,7 +267,7 @@ var ScrollingBG03down = cc.Sprite.extend({
   //onEnterメソッドはスプライト描画の際に必ず呼ばれる
   onEnter: function() {
     //背景画像の描画開始位置 横960の画像の中心が、画面の端に設置される
-    this.setPosition(size.width , /*size.height*/ 0);
+    this.setPosition(size.width , /*size.height*/ -20);
     //  this.setPosition(480,160);
   },
   scroll: function() {
@@ -276,7 +281,7 @@ var ScrollingBG03down = cc.Sprite.extend({
 });
 //--------------↑3番目下↑-------------------
 //---------------背景ここまで------------------
-//重力（仮）で落下する　宇宙船　
+//重力（仮）で落下する　エビフリャーちゃん　
 var Ship = cc.Sprite.extend({
   ctor: function() {
     this._super();
@@ -322,7 +327,7 @@ var Ship = cc.Sprite.extend({
     this.ySpeed += gameGravity;
 
     //宇宙船が画面外にでたら、リスタートさせる
-    if (this.getPosition().y < 0 || this.getPosition().y > 320) {
+    if (this.getPosition().y < 50 || this.getPosition().y > 270) {
       restartGame();
 
     }
@@ -412,11 +417,11 @@ var item = cc.Sprite.extend({
   // アイテムを保持しておく配列
   itemSpriteArray: null,
   // 配列の宣言　アイテムの名前を指定
-  itemArray: [res.item01_png, res.item02_png, res.item03_png, res.item04_png, res.item05_png, res.item06_png, res.item07_png],
+  itemArray: [res.item01_png, res.item02_png, res.item03_png, res.item04_png/*, res.item05_png, res.item06_png, res.item07_png*/],
   ctor: function() {
     this._super();
     this.itemSpriteArray = new Array();
-    var rnd = Math.floor(Math.random() * 7);
+    var rnd = Math.floor(Math.random() * 4);
     //配列で画像管理　おーぶ出現のコード参照
     //***itemの数字をランダムにすれば配列組む必要なくね？***
     this.initWithFile(/*"res/nagoya" + Math.random(6) + "_png"*/ this.itemArray[rnd]);
@@ -440,7 +445,7 @@ var item = cc.Sprite.extend({
       audioEngine.setEffectsVolume(audioEngine.getEffectsVolume() + 0.3);
       //効果音を再生する
       //audioEngine.playEffect("res/se_bang.mp3");
-      audioEngine.playEffect(res.se_bang);
+      audioEngine.playEffect(res.se_item);
       //bgmの再生をとめる
       /*if (audioEngine.isMusicPlaying()) {
         audioEngine.stopMusic();
@@ -487,7 +492,50 @@ var item = cc.Sprite.extend({
     }
   }
 });
+//--------------↓状態異常アイテムクラス↓-----------
+/*
+var item2 = cc.Sprite.extend({
+
+  ctor: function() {
+    this._super();
+    this.itemSpriteArray = new Array();
+    //配列で画像管理　おーぶ出現のコード参照
+    //***itemの数字をランダムにすれば配列組む必要なくね？***
+    this.initWithFile(res.item05_png);
+  },
+  onEnter: function() {
+    this._super();
+    this.setPosition(600, Math.random()  * 320);
+    var moveAction = cc.MoveTo.create(5, new cc.Point(-100, Math.random() * 320));
+    //↑これを変えてアイテムの出方を調整
+    this.runAction(moveAction);
+    this.scheduleUpdate();
+  },
+  update: function(dt) {
+    //小惑星との衝突を判定する処理
+    var shipBoundingBox = ship.getBoundingBox();
+    var asteroidBoundingBox = this.getBoundingBox();
+    //rectIntersectsRectは２つの矩形が交わっているかチェックする
+    if (cc.rectIntersectsRect(shipBoundingBox, asteroidBoundingBox) && ship.invulnerability == 0) {
+      gameLayer.removeAsteroid(this); //小惑星を削除する
+      //ボリュームを上げる
+      audioEngine.setEffectsVolume(audioEngine.getEffectsVolume() + 0.3);
+      //効果音を再生する
+      //audioEngine.playEffect("res/se_bang.mp3");
+      audioEngine.playEffect(res.se_item);
+      //bgmの再生をとめる
+
+      //えびふりゃーちゃんの速度を上げる
+      gameThrust = 0.2;
+}
+    if (this.getPosition().x < -50) {
+      gameLayer.removeAsteroid(this);
+    }
+  }
+});
+*/
 //---------------↑アイテムクラス終わり↑-------------
+
 
 //宇宙船を元の位置に戻して、宇宙船の変数を初期化する
 function restartGame() {
@@ -498,6 +546,7 @@ function restartGame() {
     //◆お手付きが0になったらゲームオーバー◆
     if(zanki < 0){
       zanki = 3;
+      score = 0;
       cc.director.runScene(new GameOverScene());
     }
 

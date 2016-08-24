@@ -6,7 +6,10 @@ var res = {
     asteroid_png : "res/coral_under.png",     //サンゴ
     asteroid02_png : "res/coral_above.png",   //サンゴ
     bgm_main : "res/bgm_main.mp3",            //BGM
-    se_bang : "res/se_bang.mp3",              //爆発
+    bgm_GO : "res/gameover.mp3",               //ゲームオーバーBGM
+    se_bang : "res/se_bang.mp3",              //爆発SE
+    se_item : "res/se_decide.mp3",            //アイテム取得SE
+    se_item2 :"res/se_flee1.mp3",                 //能力アイテム取得SE
     title_png : "res/Title.png",              //タイトル
     replay_png : "res/replay_button.png",     //もう一回？
     gameOV_png : "res/gameover.png",          //ゲームオーバー
